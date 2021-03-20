@@ -1,0 +1,17 @@
+﻿.validation-summary-errors {
+    border: 2px dotted #ea1818;
+    background-color: #ee8383;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+    .validation-summary-errors ul {
+        list-style: none;
+        padding: 10px;
+        color: #ffffff;
+    }
+
+.input-validation-error {
+    border: 2px solid #ea1818;
+    border-radius: 8px;
+}

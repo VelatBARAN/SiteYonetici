@@ -1,0 +1,217 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model Managers
+@{
+    ViewBag.Title = "Profil Göster";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <img src="~/images/user.png" class="rounded-circle img-thumbnail" width="128" height="128" alt="" />
+    </div>
+
+    <div class="col-md-5">
+        <h3 class="display-4 mb-4">@(Model.Name + " " + Model.Surname)</h3>
+        <br />
+        <p>
+            <b>@Html.DisplayNameFor(model => model.TC) : </b>@Model.TC <br />
+            <b>@Html.DisplayNameFor(model => model.Phone) : </b>@Model.Phone <br />
+            <b>@Html.DisplayNameFor(model => model.Eposta) : </b>@Model.Eposta <br />
+            <b>@Html.DisplayNameFor(model => model.Password) : </b>@Model.Password <br />
+        <p>
+            <br />
+        <p class="mt-4">
+            <a class="btn btn-light" title="Detay" data-toggle="modal" data-target="#profileDetail" data-profile-id="@Model.Id">
+                <i class="fa fa-send-o text-warning mr-2"></i>Detay
+            </a>
+        </p>
+    </div>
+
+    <div class="col-md-2">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cog">&nbsp;</i>
+                Seçenekler
+                <i class="icon-cog icon-white"></i>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" title="Güncelle" data-toggle="modal" data-target="#editProfileModal" data-editprofile-id="@Model.Id">
+                    <i class="fa fa-edit mr-2">&nbsp;</i>Düzenle
+                </a>
+                <a href="@Url.Action("ProfileDelete")" class="dropdown-item" onclick="return confirm('Hesabınızı silmek istediğinize emin misiniz?')">
+            <i class="fa fa-trash mr-2">&nbsp;</i>Sil
+        </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        &nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+
+<!-- Profile Detail modal-->
+<div class="modal fade" id="profileDetail" tabindex="-1" aria-labelledby="profileDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="profileDetailModalLabel">Profil Detay</h3>
+            </div>
+            <div class="modal-body" id="profileDetailBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Edit modal-->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editProfileModalLabel">Yönetici Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" class="form-control" id="editProfileId" value="">
+                        <div class="form-group">
+                            <strong for="editProfileName" class="control-label col-md-4">Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editProfileName" placeholder="Adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editProfileSurname" class="control-label col-md-4">Soyadı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editProfileSurname" placeholder="Soyadı" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editProfileTC" class="control-label col-md-4">TC *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editProfileTC" placeholder="TC" maxlength="11" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editProfilePhone" class="control-label col-md-4">Telefon *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editProfilePhone" placeholder="Telefon" maxlength="11" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editProfileEposta" class="control-label col-md-4">Eposta *</strong>
+                            <div class="col-md-8">
+                                <input type="email" class="form-control" id="editProfileEposta" placeholder="Eposta" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editProfilePassword" class="control-label col-md-4">Şifre *</strong>
+                            <div class="col-md-8">
+                                <input type="password" class="form-control" id="editProfilePassword" placeholder="Şifre" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditProfile" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+
+        $('#profileDetail').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget); // tıklanan butonun yakalama
+            var profileid = btn.data("profile-id");
+            concole.log(profileid);
+            $("#profileDetailBody").load("/Manager/ShowProfileDetail/" + profileid); // ilgili modal ın body attribute yakalanıp , controller dan load ile yükledik
+        });
+
+        $('#editProfileModal').on('show.bs.modal', function (e) {
+
+            var btn2 = $(e.relatedTarget);
+            var profileid2 = btn2.data("editprofile-id");
+
+            $.ajax({
+                url: "/Manager/Edit/" + profileid2,
+                method: "GET",
+            }).done(function (data) {
+
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editProfileName").val(data.result.Name);
+                    $("#editProfileSurname").val(data.result.Surname);
+                    $("#editProfileTC").val(data.result.TC);
+                    $("#editProfilePhone").val(data.result.Phone);
+                    $("#editProfileEposta").val(data.result.Eposta);
+                    $("#editProfileId").val(data.result.Id);
+                }
+
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditProfile").click(function () {
+
+            var ProfileName = $("#editProfileName").val();
+            var ProfileSurname = $("#editProfileSurname").val();
+            var ProfileTc = $("#editProfileTC").val();
+            var ProfilePhone = $("#editProfilePhone").val();
+            var ProfileEposta = $("#editProfileEposta").val();
+            var ProfilePassword = $("#editProfilePassword").val();
+            var ProfileId = $("#editProfileId").val();
+
+            var obj = {
+                "Name": ProfileName,
+                "Surname": ProfileSurname,
+                "TC": ProfileTc,
+                "Phone": ProfilePhone,
+                "Eposta": ProfileEposta,
+                "Password": ProfilePassword,
+                "Id": ProfileId
+            };
+
+            $.ajax({
+                url: "/Manager/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+</script>
+

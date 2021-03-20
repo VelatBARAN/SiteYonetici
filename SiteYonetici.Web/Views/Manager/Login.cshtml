@@ -1,0 +1,50 @@
+﻿@model SiteYonetici.Entities.ValueObjects.LoginViewModel
+@{
+    ViewBag.Title = "Giriş Sayfası";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<style>
+    .control input {
+        position: absolute;
+        z-index: -1;
+        /* opacity: 0; */
+        width: 15px;
+        height: 15px;
+    }
+</style>
+
+@using (Html.BeginForm("Login", "Manager", FormMethod.Post, new { @class = "login-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row align-items-center justify-content-center" style="padding-top:200px">
+        <div class="col-md-7">
+            <h3>Giriş Formu- <strong>Site Yönetimi</strong></h3>
+            <p class="mb-4">Sitenizi yönetmenize hazırmısınız...</p>
+            <div class="form-group">
+                <div class="col-md-10 offset-1">
+                    @Html.ValidationSummary(false)
+                </div>
+            </div>
+            <div class="form-group first">
+                <label for="eposta">Eposta</label>
+                <input type="email" class="form-control" name="Eposta" placeholder="eposta giriniz.." id="eposta">
+            </div>
+            <div class="form-group last mb-3">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="Password" placeholder="şifre giriniz..." id="password">
+            </div>
+
+            <div class="d-flex mb-5 align-items-center">
+                <label class="control control--checkbox mb-0">
+                    <span class="caption">Beni hatırla</span>&nbsp;&nbsp;<input type="checkbox" checked="checked" />
+                </label>
+                <span class="ml-auto"><a href="/Manager/ForgetPassword" class="forgot-pass" title="Şifremi Unuttum">Şifremi Unuttum</a></span>
+            </div>
+            <button type="submit" class="btn btn-outline-primary btn-lg" title="Giriş">
+                <i class="fa fa-sign-in"></i> Giriş
+            </button>
+        </div>
+    </div>
+}
+

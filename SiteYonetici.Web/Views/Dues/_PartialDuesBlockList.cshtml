@@ -1,0 +1,14 @@
+﻿@using SiteYonetici.Entities
+@using SiteYonetici.BusinessLayer
+@model List<Block>
+@{
+    BlockManager blockManager = new BlockManager();
+}
+
+@foreach (Block item in blockManager.List())
+{
+    <div class="form-group row">
+        <label class="col-form-label font-weight-bold col-md-3">Blok - @item.Name</label>
+        <input type="text" class="form-control col-md-9" name="@item.Name" placeholder="Aidatı giriniz" id="@item.Id" required />
+    </div>
+}

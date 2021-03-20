@@ -1,0 +1,97 @@
+﻿@using SiteYonetici.Entities
+@using SiteYonetici.BusinessLayer
+@model Dues
+@{
+    ViewBag.Title = "Aidat Dağıtımı";
+    BlockManager blockManager = new BlockManager();
+}
+
+<link href="~/Content/toastr.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.5.1.min.js"></script>
+<script src="~/Scripts/toastr.min.js"></script>
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row mt-3 ml-5">
+    <div class="col-md-8 col-offset-2">
+        @using (Html.BeginForm("DuesDelivery", "Dues", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.DuesPeriodId, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-3" })
+                @Html.DropDownListFor(model => model.DuesPeriodId, (IEnumerable<SelectListItem>)ViewBag.DuesPeriod, "dönem seçiniz...", new { @class = "form-control dropdown col-md-9" })
+                @Html.ValidationMessageFor(model => model.DuesPeriodId, "", new { @class = "text-danger col-md-9", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.ThisMonthTotalDues, htmlAttributes: new { @class = "col-form-label font-weight-bold" })
+                    <input type="number" class="form-control" value="@ViewBag.TotalExpense" name="ThisMonthTotalDues" readonly />
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.NotDuesAmount, htmlAttributes: new { @class = "col-form-label font-weight-bold" })
+                    <input type="number" class="form-control" value="@ViewBag.TotalNotDuesAmount" name="NotDuesAmount" readonly />
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.DuesAmount, htmlAttributes: new { @class = "col-form-label font-weight-bold" })
+                    <input type="number" class="form-control" value="@ViewBag.TotalDuesAmount" name="DuesAmount" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.LastPaymentDate, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-3" })
+                @Html.EditorFor(model => model.LastPaymentDate, new { htmlAttributes = new { @class = "form-control col-md-9", type = "date" } })
+                @Html.ValidationMessageFor(model => model.LastPaymentDate, "", new { @class = "text-danger col-md-9", style = "margin-left:150px" })
+            </div>
+
+            <!-- TO DO List : It will be make subsequent in the list form -->
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-3" })
+                <input type="text" class="form-control col-md-9" value="@ViewBag.Category" name="Category" readonly />
+                @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger col-md-9", style = "margin-left:150px" })
+            </div>
+
+            <!-- TO DO List : It will be make subsequent in the list form -->
+            <div class="form-group row">
+                @Html.LabelFor(model => model.DuesDeliveryWay, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-3" })
+                <input type="text" class="form-control col-md-9" value="@ViewBag.DuesDeliveryWay" name="DuesDeliveryWay" readonly />
+                @Html.ValidationMessageFor(model => model.DuesDeliveryWay, "", new { @class = "text-danger col-md-9", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12 text-right" style="left">
+                    @BoostrapHelper.Button("success", "Aidatı Dağıt", string.Empty, "submit", "send", "Aidatı Dağıt")
+                    @BoostrapHelper.LinkButton("/Home/Index", "secondary", string.Empty, "İptal", "arrow-left", "İptal")
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (TempData["DuesDeliveryInfo"] != null && TempData["DuesDeliveryInfo"].ToString() == "1")
+{
+    <script type="text/javascript">
+        toastr["success"]("Aidat dağıtımı başarılı bir şekilde gerçekleşti", "Mesaj");
+    </script>
+}
+else if (TempData["DuesDeliveryInfo"] != null && TempData["DuesDeliveryInfo"].ToString() == "0")
+{
+    <script type="text/javascript">
+        toastr["error"]("Aidat dağıtılırken hata oluştu.", "Mesaj");
+    </script>
+}
+else if (TempData["DuesDeliveryInfo"] != null && TempData["DuesDeliveryInfo"].ToString() == "2")
+{
+    <script type="text/javascript">
+        toastr["warning"]("Aidat dağıtılırken bazı dairelere dağıtılamadı.", "Mesaj");
+    </script>
+}

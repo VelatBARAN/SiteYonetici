@@ -1,0 +1,39 @@
+﻿@helper DropdownLinkMenu(string url = " ", string icon = " ", string text = " ")
+{
+    <a class="dropdown-item" href="@url"><i class="fa fa-@icon @(string.IsNullOrEmpty(text) ? " " : "mr-2")"></i>@text</a>
+}
+@helper LinkMenu(string url = " ", string icon = " ", string text = " ")
+{
+    <a class="nav-link active" aria-current="page" href="@url"><i class="fa fa-@icon @(string.IsNullOrEmpty(text) ? " " : "mr-2")"></i>@text</a>
+}
+@helper DropdownDivider()
+{
+    <div class="dropdown-divider"></div>
+}
+@helper LinkButton(string id = "", string url = "", string color = "", string addtionalClass = "", string title = "", string icon = "", string text = "")
+{
+    <a href="@url" id="@id" name="@id" class="btn btn-@color @addtionalClass" title="@title">
+        <i class="fa fa-@icon @(string.IsNullOrEmpty(text) ? "" : "mr-2")"></i>@text
+    </a>
+}
+
+@helper LinkButton(string url = "", string color = "", string addtionalClass = "", string title = "", string icon = "", string text = "")
+{
+    <a href="@url" class="btn btn-@color @addtionalClass" title="@title">
+        <i class="fa fa-@icon @(string.IsNullOrEmpty(text) ? "" : "mr-2")"></i>@text
+    </a>
+}
+
+@helper Button(string id = "", string color = "", string title = "", string addtionalClass = "", string typ = "button", string icon = "", string text = "")
+{
+    <button type="@typ" id="@id" name="@id" class="btn btn-@color @addtionalClass" title="@title">
+        <i class="fa fa-@icon @(string.IsNullOrEmpty(text) ? "" : "mr-2")"></i>@text
+    </button>
+}
+
+@helper Button(string color = "", string title = "", string addtionalClass = "", string typ = "button", string icon = "", string text = "")
+{
+    <button type="@typ" class="btn btn-@color @addtionalClass" title="@title">
+        <i class="fa fa-@icon @(string.IsNullOrEmpty(text) ? "" : "mr-2")"></i>@text
+    </button>
+}

@@ -1,0 +1,215 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<TaskType>
+@{
+    ViewBag.Title = "Görev Türleri";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Görev Türleri Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/TaskType/Create" class="btn btn-primary" data-target="#newTaskTypeModal" data-toggle="modal" data-title="newTaskType" title="Yeni Görev Türü Ekle"><i class="fa fa-plus mr-2"></i>Yeni Görev Türü Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.TaskTypeName).Titled("Görev Türü");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning', title='Güncelle', data-toggle = 'modal', data-target = '#editTaskTypeModal', data-tasktype-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteTaskTypeModal', data-tasktype-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir görev türü bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new ApartmentType-->
+<div class="modal fade" id="newTaskTypeModal" tabindex="-1" aria-labelledby="newTaskTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newTaskTypeModalLabel">Görev Türü Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newTaskTypeName" class="control-label col-md-4">Görev Türü *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newTaskTypeName" placeholder="Görev türü" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddTaskType" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit ApartmentType-->
+<div class="modal fade" id="editTaskTypeModal" tabindex="-1" aria-labelledby="editTaskTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editTaskTypeModalLabel">Görev Türü Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editTaskTypeId" value="" />
+                        <div class="form-group">
+                            <strong for="editTaskTypeName" class="control-label col-md-4">Görev Türü *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editTaskTypeName" placeholder="Görev türü" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditTaskType" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete ApartmentType-->
+<div class="modal fade" id="deleteTaskTypeModal" tabindex="-1" aria-labelledby="deleteTaskTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteTaskTypeModalLabel">Daire Tipi Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteTaskTypeForm" action="/TaskType/Delete" method="post">
+                            <input type="hidden" id="deleteTaskTypeId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Görev türü kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteTaskType" class="btn btn-danger" title="Sil" onclick="btnDeleteTaskType_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddTaskType").click(function () {
+
+            var taskTypeName = $("#newTaskTypeName").val();
+
+            var obj = {
+                "TaskTypeName": taskTypeName
+            };
+            $.ajax({
+                url: "/TaskType/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editTaskTypeModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var safeid = btn.data("tasktype-id");
+
+            $.ajax({
+                url: "/TaskType/Edit/" + safeid,
+                method: "GET",
+            }).done(function (data) {
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editTaskTypeName").val(data.result.TaskTypeName);
+                    $("#editTaskTypeId").val(data.result.Id);
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditTaskType").click(function () {
+
+            var taskTypeName = $("#editTaskTypeName").val();
+            var taskTypeId = $("#editTaskTypeId").val();
+
+            var obj = {
+                "TaskTypeName": taskTypeName,
+                "Id": taskTypeId
+            };
+
+            $.ajax({
+                url: "/TaskType/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteTaskTypeModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var apartmenttypeId = btn.data("tasktype-id");
+            $("#deleteTaskTypeModal").find("#deleteTaskTypeId").val(apartmenttypeId);
+        });
+    });
+    function btnDeleteTaskType_Click() {
+        $("#deleteTaskTypeForm").submit();
+    }
+</script>
+
+

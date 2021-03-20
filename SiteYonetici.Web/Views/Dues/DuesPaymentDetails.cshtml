@@ -1,0 +1,75 @@
+﻿@model IEnumerable<SiteYonetici.Entities.DuesPaymentDetails>
+@{
+    ViewBag.Title = "Aidat Ödeme Detayı";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped table-hover" id="myTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DuesPayment.LastPaymentDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DuesPayment.DuesPeriodId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DuesPayment.Apartment.BlockId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DuesPayment.ApartmentId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DuesPayment.PaidAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SafeId)
+                    </th>
+                    <th>
+                        İşlem Tarihi
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DuesPayment.LastPaymentDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DuesPayment.DuesPeriod.DuesYear) - @Html.DisplayFor(modelItem => item.DuesPayment.DuesPeriod.DuesMonth)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DuesPayment.Apartment.Block.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DuesPayment.Apartment.ApartmentNo)
+                        </td>
+                        <td>
+                            @Html.Raw(Html.DisplayFor(modelItem => item.PaidAmount))
+                        </td>
+                        <td>
+                            @Html.Raw(Html.DisplayFor(modelItem => item.Safe.SafeType))
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+@Html.Partial("_PartialDatatable")

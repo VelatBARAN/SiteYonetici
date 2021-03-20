@@ -1,0 +1,177 @@
+﻿@model IEnumerable<SiteYonetici.Entities.DuesPayment>
+@{
+    ViewBag.Title = "Aidat Ödeme";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped table-hover" id="myTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastPaymentDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DuesPeriodId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Apartment.Block.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Apartment.ApartmentNo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NotDuesAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TotalDuesAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PaidAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RemainingAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsPaid)
+                    </th>
+                    <th>
+                        Ödeme Yap
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastPaymentDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DuesPeriod.DuesYear) - @Html.DisplayFor(modelItem => item.DuesPeriod.DuesMonth)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Apartment.Block.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Apartment.ApartmentNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NotDuesAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TotalDuesAmount)
+                        </td>
+                        <td>
+                            @Html.Raw(Html.DisplayFor(modelItem => item.PaidAmount))
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RemainingAmount)
+                        </td>
+                        <td class="text-center">
+                            @if (item.RemainingAmount == 0)
+                            {
+                                <strong style="color:green">Ödendi</strong> <i class="fa fa-check ml-2 text-success"></i>
+                            }
+                            else if (item.TotalDuesAmount == item.RemainingAmount)
+                            {
+                                <strong style="color:red">Ödenmedi</strong> <i class="fa fa-times text-danger"></i>
+                            }
+                            else
+                            {
+                                <strong style="color:royalblue">Kısmi Ödendi</strong> <i class="fa fa-star-half-full text-info"></i>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsPaid == true)
+                            {
+                                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#duesPayment" data-duespayment-id="@item.Id" title="Ödeme Yap" disabled>
+                                    <i class="fa fa-send mr-2">
+                                        Ödeme Yap
+                                    </i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#duesPayment" data-duespayment-id="@item.Id" title="Ödeme Yap">
+                                    <i class="fa fa-send mr-2">
+                                        Ödeme Yap
+                                    </i>
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<div class="modal fade" id="duesPayment" tabindex="-1" aria-labelledby="duesPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="duesPaymentModalLabel">Aidat Ödemesi Yap</h3>
+            </div>
+            <div class="modal-body" id="duesPaymentBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-primary" id="btnDuesPayment" title="Kaydet"><i class="fa fa-check mr-2"></i>Kaydet</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        $('#duesPayment').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            duespaymentid = btn.data("duespayment-id");
+            $("#duesPaymentBody").load("/Dues/DuesPayment/" + duespaymentid);
+        });
+
+        $("#btnDuesPayment").click(function () {
+
+            var duespaymentid = $("#duesPaymentId").val();
+            var safeid = $('#SafeId').val(); // bakılacak
+            var paidduesamount = $("#paymentedDuesAmount").val();
+            var paymentdate = $("#paymentDate").val();
+
+            var obj = {
+                "DuesPaymentId": duespaymentid,
+                "SafeId": safeid,
+                "PaidAmount": paidduesamount,
+                "PaymentDate": paymentdate
+            };
+
+            $.ajax({
+                url: "/Dues/DuesPayment",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+        });
+    });
+</script>
+
+@Html.Partial("_PartialDatatable")

@@ -1,0 +1,239 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<Safe>
+@{
+    ViewBag.Title = "Kasalar";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Kasa Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/Safe/Create" class="btn btn-primary" data-target="#newSafeModal" data-toggle="modal" data-title="newSafe" title="Yeni Kasa Ekle"><i class="fa fa-plus mr-2"></i>Yeni Kasa Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.SafeType).Titled("Kasa Türü");
+       col.Add(x => x.Name).Titled("Kasa Adı");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning', title='Güncelle', data-toggle = 'modal', data-target = '#editSafeModal', data-safe-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteSafeModal', data-safe-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       //col.Add().Encoded(false).Sanitized(false).RenderValueAs(k => Html.ActionLink("Sil", "Delete", null, new { @class = "btn btn-danger", title = "Sil", data_toggle = "modal", data_target = "#delete", data_uri = Url.Action("Delete", "Safe", new { id = k.Id }), data_safe_id = k.Id);
+
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir kasa bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new safe-->
+<div class="modal fade" id="newSafeModal" tabindex="-1" aria-labelledby="newSafeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newSafeModalLabel">Kasa Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newSafeType" class="control-label col-md-4">Kasa Türü *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newSafeType" placeholder="Kasa türü" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newSafeName" class="control-label col-md-4">Kasa Tanımı *</strong>
+                            <div class="col-md-8">
+                                <textarea class="form-control" id="newSafeName" placeholder="Kasa Tanımı" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddSafe" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit safe-->
+<div class="modal fade" id="editSafeModal" tabindex="-1" aria-labelledby="editSafeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editSafeModalLabel">Kasa Güncelle</h3>
+            </div>
+            <div class="modal-body" id="editSafeBody">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editSafeId" value="" />
+                        <div class="form-group">
+                            <strong for="SafeType" class="control-label col-md-4">Kasa Türü *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editSafeType" placeholder="Kasa türü" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="SafeDefinition" class="control-label col-md-4">Kasa Tanımı *</strong>
+                            <div class="col-md-8">
+                                <textarea class="form-control" id="editSafeName" placeholder="Kasa Tanımı" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditSafe" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete safe-->
+<div class="modal fade" id="deleteSafeModal" tabindex="-1" aria-labelledby="deleteSafeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteSafeModalLabel">Kasa Sil</h3>
+            </div>
+            <div class="modal-body" id="editSafeBody">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteSafeForm" action="/Safe/Delete" method="post">
+                            <input type="hidden" id="deleteSafeId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Kasa kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteSafe" class="btn btn-danger" title="Sil" onclick="btnDeleteSafe_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddSafe").click(function () {
+
+            var safeType = $("#newSafeType").val();
+            var safeName = $("#newSafeName").val();
+
+            var obj = {
+                "SafeType": safeType,
+                "Name": safeName
+            };
+                $.ajax({
+                    url: "/Safe/Create",
+                    method: "Post",
+                    data: obj,
+                    dataType: "json"
+                }).done(function (result) {
+                    if (result.hasError) {
+                        alert(result.Message);
+                    } else {
+                        alert(result.Message);
+                        location.reload();
+                    }
+                    //location.reload();
+                }).fail(function () {
+                    alert("Sunucu ile bağlantı kurulamadı");
+                });
+
+        });
+
+        $('#editSafeModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var safeid = btn.data("safe-id");
+            console.log(safeid);
+            //$("#editSafeBody").load("/Safe/Edit/" + safeid);
+
+            $.ajax({
+                url: "/Safe/Edit/" + safeid,
+                method: "GET",
+            }).done(function (data) {
+
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editSafeType").val(data.result.SafeType);
+                    $("#editSafeName").val(data.result.Name);
+                    $("#editSafeId").val(data.result.Id);
+                }
+
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditSafe").click(function () {
+
+            var safeType = $("#editSafeType").val();
+            var safeName = $("#editSafeName").val();
+            var safeId = $("#editSafeId").val();
+
+            var obj = {
+                "SafeType": safeType,
+                "Name": safeName,
+                "Id": safeId
+            };
+
+            $.ajax({
+                url: "/Safe/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteSafeModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var safeId = btn.data("safe-id");
+            $("#deleteSafeModal").find("#deleteSafeId").val(safeId);
+        });
+    });
+    function btnDeleteSafe_Click() {
+        $("#deleteSafeForm").submit();
+    }
+</script>

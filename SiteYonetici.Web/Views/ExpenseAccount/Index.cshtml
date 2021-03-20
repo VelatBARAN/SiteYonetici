@@ -1,0 +1,218 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<ExpenseAccount>
+@{
+    ViewBag.Title = "Gider Hesapları";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="display-4">
+            <p>@ViewBag.Title</p>
+        </div>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/ExpenseAccount/Create" class="btn btn-primary" data-target="#newExpenseAccountModal" data-toggle="modal" data-title="newExpenseAccount" title="Yeni Gider Hesabı Ekle">
+            <i class="fa fa-plus mr-2"></i>Yeni Gider Hesabı Ekle
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.AccountName).Titled("Gider Hesabı");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning', title='Güncelle', data-toggle = 'modal', data-target = '#editExpenseAccountModal', data-expenseaccount-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteExpenseAccountModal', data-expenseaccount-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir gider hesabı bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new ExpenseAccount-->
+<div class="modal fade" id="newExpenseAccountModal" tabindex="-1" aria-labelledby="newExpenseAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newExpenseAccountModalLabel">Gider Hesabı Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newAccountName" class="control-label col-md-4">Hesap Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newAccountName" placeholder="hesap adı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddExpenseAccount" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit ExpenseAccount-->
+<div class="modal fade" id="editExpenseAccountModal" tabindex="-1" aria-labelledby="editExpenseAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editExpenseAccountModalLabel">Gider Hesabı Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editExpenseAccountId" value="" />
+                        <div class="form-group">
+                            <strong for="editAccountName" class="control-label-md-4">Hesap Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editAccountName" placeholder="Hesap adı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditExpenseAccount" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete ExpenseAccount-->
+<div class="modal fade" id="deleteExpenseAccountModal" tabindex="-1" aria-labelledby="deleteExpenseAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteExpenseAccountModalLabel">Gider Hesabı Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteExpenseAccountForm" action="/ExpenseAccount/Delete" method="post">
+                            <input type="hidden" id="deleteExpenseAccountId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove-circle"></span> Gider hesabı kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteExpenseAccount" class="btn btn-danger" title="Sil" onclick="btnDeleteExpenseAccount_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddExpenseAccount").click(function () {
+
+            var accountName = $("#newAccountName").val();
+
+            var obj = {
+                "AccountName": accountName
+            };
+            $.ajax({
+                url: "/ExpenseAccount/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editExpenseAccountModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var expenseaccountid = btn.data("expenseaccount-id");
+
+            $.ajax({
+                url: "/ExpenseAccount/Edit/" + expenseaccountid,
+                method: "GET",
+            }).done(function (data) {
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editAccountName").val(data.result.AccountName);
+                    $("#editExpenseAccountId").val(data.result.Id);
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditExpenseAccount").click(function () {
+
+            var accountName = $("#editAccountName").val();
+            var expenseAccountId = $("#editExpenseAccountId").val();
+
+            var obj = {
+                "AccountName": accountName,
+                "Id": expenseAccountId
+            };
+
+            $.ajax({
+                url: "/ExpenseAccount/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteExpenseAccountModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var expenseAccountId = btn.data("expenseaccount-id");
+            $("#deleteExpenseAccountModal").find("#deleteExpenseAccountId").val(expenseAccountId);
+        });
+    });
+    function btnDeleteExpenseAccount_Click() {
+        $("#deleteExpenseAccountForm").submit();
+    }
+</script>
+

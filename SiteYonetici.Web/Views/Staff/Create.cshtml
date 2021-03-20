@@ -1,0 +1,79 @@
+﻿@model SiteYonetici.Entities.Staff
+
+@{
+    ViewBag.Title = "Personel Ekle";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row mt-3 ml-5">
+    <div class="col-md-8 col-offset-2">
+        @using (Html.BeginForm("Create", "Staff", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.TC, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.TC, new { htmlAttributes = new { @class = "form-control col-md-10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.TC, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control col-md-10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control col-md-10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.InsuranceNo, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.InsuranceNo, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.InsuranceNo, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.TaskTypeId, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.DropDownListFor(model => model.TaskTypeId, (SelectList)ViewBag.TaskType, "görev türü seçiniz...", new { @class = "form-control dropdown col-md-10" })
+                @Html.ValidationMessageFor(model => model.TaskTypeId, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.JobDefinition, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                <textarea name="JobDefinition" class="form-control col-md-10" rows="5"></textarea>
+                @Html.ValidationMessageFor(model => model.JobDefinition, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div> <br />
+
+            <div class="form-group row">
+                <div class="col-md-12 text-right" style="left">
+                    @BoostrapHelper.Button("success", "Kaydet", string.Empty, "submit", "save", "Kaydet")
+                    @BoostrapHelper.LinkButton("/Staff/Index", "secondary", string.Empty, "İptal", "arrow-left", "İptal")
+                </div>
+            </div>
+        }
+    </div>
+</div>

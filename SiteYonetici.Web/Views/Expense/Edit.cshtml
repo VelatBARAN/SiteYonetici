@@ -1,0 +1,89 @@
+﻿@model SiteYonetici.Entities.Expense
+
+@{
+    ViewBag.Title = "Gider Güncelle";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row mt-3 ml-5">
+    <div class="col-md-8 col-offset-2">
+        @using (Html.BeginForm("Edit", "Expense", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.DropDownListFor(model => model.ClientId, (List<SelectListItem>)ViewBag.Client, "cari seçiniz...", new { @class = "form-control dropdown col-md-10" })
+                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.SafeId, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.DropDownListFor(model => model.SafeId, (List<SelectListItem>)ViewBag.Safe, "kasa seçiniz...", new { @class = "form-control dropdown col-md-10" })
+                @Html.ValidationMessageFor(model => model.SafeId, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.ExpenseAccountId, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.DropDownListFor(model => model.ExpenseAccountId, (SelectList)ViewBag.ExpenseAccount, "gider hesabı seçiniz...", new { @class = "form-control dropdown col-md-10" })
+                @Html.ValidationMessageFor(model => model.ExpenseAccountId, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control col-md-10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                <textarea name="Description" class="form-control col-md-10" rows="5">@Html.Raw(Model.Description)</textarea>
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div> <br />
+
+            <div class="form-group row">
+                @if (Model.IsDues == true)
+                {
+                    <div class="col-md-2 col-offset-2">
+                        @Html.LabelFor(model => model.IsDues, "Aidat", htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-1 mr-5" })
+                        <input id="Radio1" type="radio" class="col-md-5" name="IsDues" value="true" style="width:25px;height:25px" checked />
+                    </div>
+                    <div class="col-md-2 col-offset-2">
+                        @Html.LabelFor(model => model.IsDues, "Demirbaş", htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-1 mr-5" }) &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="Radio1" type="radio" class="col-md-5" name="IsDues" value="false" style="width:25px;height:25px" />
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-2 col-offset-2">
+                        @Html.LabelFor(model => model.IsDues, "Aidat", htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-1 mr-5" })
+                        <input id="Radio1" type="radio" class="col-md-5" name="IsDues" value="true" style="width:25px;height:25px" />
+                    </div>
+                    <div class="col-md-2 col-offset-2">
+                        @Html.LabelFor(model => model.IsDues, "Demirbaş", htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-1 mr-5" }) &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input id="Radio1" type="radio" class="col-md-5" name="IsDues" value="false" checked style="width:25px;height:25px" />
+                    </div>
+                }
+                @Html.ValidationMessageFor(model => model.IsDues, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12 text-right" style="left">
+                    @BoostrapHelper.Button("warning", "Güncelle", string.Empty, "submit", "edit", "Güncelle")
+                    @BoostrapHelper.LinkButton("/Expense/Index", "secondary", string.Empty, "İptal", "arrow-left", "İptal")
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

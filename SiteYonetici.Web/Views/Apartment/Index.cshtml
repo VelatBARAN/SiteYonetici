@@ -1,0 +1,150 @@
+﻿@using SiteYonetici.Entities
+@model IEnumerable<Apartment>
+@{
+    ViewBag.Title = "Daireler";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+<p>
+    @BoostrapHelper.LinkButton("/Apartment/Create", "primary", string.Empty, "Yeni Daire Ekle", "plus", "Yeni Daire Ekle")
+</p>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped table-hover" id="myTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Floor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ApartmentNo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NameOfOwner)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SurnameOfOwner)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneOfOwner)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NameOfHirer)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SurnameOfHirer)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneOfHirer)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ApartmentTypes.ApartmentTypeName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Block.Name)
+                    </th>
+                    <th>
+                        İşlemler
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Floor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApartmentNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NameOfOwner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SurnameOfOwner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneOfOwner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NameOfHirer)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SurnameOfHirer)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneOfHirer)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ApartmentTypes.ApartmentTypeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Block.Name)
+                        </td>
+                        <td>
+                            <div class="col-md-2 text-right">
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle btn-success" data-toggle="dropdown" href="#">
+                                        <span class="glyphicon glyphicon-cog">&nbsp;</span>
+                                        Seçenekler
+                                        <span class="icon-cog icon-white"></span><span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="/Apartment/Edit/@item.Id" class="dropdown-item" title="Güncelle"><span class="fa fa-edit mr-2"> Güncelle</span></a>
+                                            @*@BoostrapHelper.LinkButton("/Apartment/Edit/" + item.Id, string.Empty, string.Empty, "Güncelle", "edit", "Güncelle")*@
+                                        </li>
+                                        <li>
+                                            <a class="apartmentDelete dropdown-item" title="Sil" data-id="@item.Id"><span class="fa fa-trash mr-2"> Sil</span></a>
+                                            @*@BoostrapHelper.LinkButton("/Personnel/Delete/@item.Id", "", "", "Sil", "trash", "Sil")*@
+                                        </li>
+                                        <li>
+                                            <!--TO DO List :will be demonstrated with Modal-->
+                                            <a class="dropdown-item" data-toggle="modal" data-target="#apartmentDetail" data-apartment-id="@item.Id" title="Detay"> <span class="fa fa-search mr-2"> Detay</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<div class="modal fade" id="apartmentDetail" tabindex="-1" aria-labelledby="apartmentDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="apartmentDetailModalLabel">Daire Detay</h3>
+            </div>
+            <div class="modal-body" id="apartmentDetailBody">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/customApartmentDelete.js"></script>
+<script>
+    $(function () {
+        $('#apartmentDetail').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget); // tıklanan butonun yakalama
+            apartmentid = btn.data("apartment-id");
+            $("#apartmentDetailBody").load("/Apartment/Detail/" + apartmentid); // ilgili modal ın body attribute yakalanıp , controller dan load ile yükledik
+        });
+    });
+</script>
+
+@Html.Partial("_PartialDatatable")

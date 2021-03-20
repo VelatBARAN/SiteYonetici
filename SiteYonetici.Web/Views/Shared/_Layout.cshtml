@@ -1,0 +1,200 @@
+﻿@using SiteYonetici.Web.Models
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Site Yönetimi - Anasayfa</title>
+
+    @*<link href="~/Content/_LayoutSite/bootstrap.min.css" rel="stylesheet" />*@
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- grid css-->
+    <link href="~/Content/Gridmvc.css" rel="stylesheet" />
+    <link href="~/Content/gridmvc.datepicker.css" rel="stylesheet" />
+    <!-- custom css-->
+    <link href="~/Content/_LayotSite/css/shop-homepage.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/site-details.css" rel="stylesheet" />
+    <!-- fontawesome css-->
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- Validate error css-->
+    <link href="~/Content/validation-summary-errors.css" rel="stylesheet" />
+
+    <!-- js -->
+    <script src="~/Scripts/jquery-3.5.1.min.js"></script>
+    <script src="~/Scripts/umd/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootbox.min.js"></script>
+    <script src="~/Scripts/gridmvc.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand ml-3" href="/Home/Index">Site Yönetimi</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/Home/Index">Anasayfa</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-hdd-o mr-2"></i>Kasa
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Safe/Index", "th-list", "Kasa Tipleri")
+                        @BoostrapHelper.DropdownLinkMenu("/Safe/Create", "plus", "Kasa Tipi Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-drivers-license mr-2"></i>Cari
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Client/Index", "th-list", "Cariler")
+                        @BoostrapHelper.DropdownLinkMenu("/Client/Create", "plus", "Cari Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-users mr-2"></i>Personel
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Staff/Index", "th-list", "Personeller")
+                        @BoostrapHelper.DropdownLinkMenu("/Staff/Create", "plus", "Personel Ekle")
+                        @BoostrapHelper.DropdownDivider()
+                        @BoostrapHelper.DropdownLinkMenu("/TaskType/Index", "th-list", "Görev Tipleri")
+                        @BoostrapHelper.DropdownLinkMenu("/TaskType/Create", "plus", "Görev Tipi Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-building-o mr-2"></i>Daire
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Apartment/Index", "th-list", "Daireler")
+                        @BoostrapHelper.DropdownLinkMenu("/Apartment/Create", "plus", "Daire Ekle")
+                        @BoostrapHelper.DropdownDivider()
+                        @BoostrapHelper.DropdownLinkMenu("/ApartmentType/Index", "th-list", "Daire Tipleri")
+                        @BoostrapHelper.DropdownLinkMenu("/ApartmentType/Create", "plus", "Daire Tipi Ekle")
+                        @BoostrapHelper.DropdownDivider()
+                        @BoostrapHelper.DropdownLinkMenu("/Block/Index", "th-list", "Bloklar")
+                        @BoostrapHelper.DropdownLinkMenu("/Block/Create", "plus", "Blok Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-thumbs-o-up mr-2"></i>Gelir
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Income/Index", "th-list", "Gelirler")
+                        @BoostrapHelper.DropdownLinkMenu("/Income/Create", "plus", "Gelir Ekle")
+                        @BoostrapHelper.DropdownDivider()
+                        @BoostrapHelper.DropdownLinkMenu("/IncomeAccount/Index", "th-list", "Gelir Hesapları")
+                        @BoostrapHelper.DropdownLinkMenu("/IncomeAccount/Create", "plus", "Gelir Hesabı Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-thumbs-o-down mr-2"></i>Gider
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Expense/Index", "th-list", "Giderler")
+                        @BoostrapHelper.DropdownLinkMenu("/Expense/Create", "plus", "Gider Ekle")
+                        @BoostrapHelper.DropdownDivider()
+                        @BoostrapHelper.DropdownLinkMenu("/ExpenseAccount/Index", "th-list", "Gider Hesapları")
+                        @BoostrapHelper.DropdownLinkMenu("/ExpenseAccount/Create", "plus", "Gider Hesabı Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-calendar mr-2"></i>Dönemler
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/DuesPeriod/Index", "calendar", "Dönemler")
+                        @BoostrapHelper.DropdownLinkMenu("/DuesPeriod/Create", "plus", "Yönetici Ekle")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-exchange mr-2"></i>Aidat İşlemleri
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Dues/DuesDelivery", "exchange", "Aidat Dağıt")
+                        @BoostrapHelper.DropdownLinkMenu("/Dues/DuesPaymentList", "th-list", "Aidat Tahsilat İşlemleri")
+                        @BoostrapHelper.DropdownLinkMenu("/Dues/DuesPaymentDetails", "archive", "Daire Tahsilat Detay")
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-wrench mr-2"></i>Yönetim
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Manager/Index", "user", "Yöneticiler")
+                        @BoostrapHelper.DropdownLinkMenu("/Manager/Create", "user-plus", "Yönetici Ekle")
+                    </div>
+                </li>
+                <li class="nav-item ml-4">
+                    <a class="nav-link" href="javascript:void(0)">
+                        @*<b>Version : @(System.Reflection.Assembly.GetAssembly(typeof(MvcApplication))?.GetName().Version.ToString())</b>*@
+                        <b>Version : @(typeof(Controller).Assembly.GetName().Version)</b>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user mr-2"></i> @CurrentSession.Manager.Eposta
+                    </a>
+                    <div class="dropdown-menu">
+                        @BoostrapHelper.DropdownLinkMenu("/Manager/ShowProfile", "eye", "Profil Göster")
+                        @BoostrapHelper.DropdownDivider()
+                        @BoostrapHelper.DropdownLinkMenu("/Manager/PasswordChange", "key", "Şifre Değiştir")
+                    </div>
+                </li>
+                <li class="nav-item">
+                    @BoostrapHelper.LinkMenu("/Manager/LogOut", "sign-out", "Çıkış")
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        @RenderBody()
+
+    </div>
+    <!-- /.container -->
+
+    <div class="container">
+        <hr>
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Bilgisayar Mühendisi - Welat BARAN Tarafından yapıldı.&nbsp;Tüm Hakları Saklıdır. &copy; @DateTime.Now.Year </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- /.container -->
+</body>
+
+</html>

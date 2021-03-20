@@ -1,0 +1,93 @@
+﻿@model SiteYonetici.Entities.Apartment
+
+@{
+    ViewBag.Title = "Daire Ekle";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="display-4 border-bottom">
+            @ViewBag.Title
+        </p>
+    </div>
+</div>
+
+<div class="row mt-3 ml-5">
+    <div class="col-md-8 col-offset-2">
+        @using (Html.BeginForm("Create", "Apartment", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Floor, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.Floor, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.Floor, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.ApartmentNo, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.ApartmentNo, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.ApartmentNo, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.NameOfOwner, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.NameOfOwner, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.NameOfOwner, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.SurnameOfOwner, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.SurnameOfOwner, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.SurnameOfOwner, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.PhoneOfOwner, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.PhoneOfOwner, new { htmlAttributes = new { @class = "form-control col-md-10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.PhoneOfOwner, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.NameOfHirer, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.NameOfHirer, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.NameOfHirer, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.SurnameOfHirer, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.SurnameOfHirer, new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @Html.ValidationMessageFor(model => model.SurnameOfHirer, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.PhoneOfHirer, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.EditorFor(model => model.PhoneOfHirer, new { htmlAttributes = new { @class = "form-control col-md-10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.PhoneOfHirer, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.ApartmentTypeId, "Daire Tipi", htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.DropDownListFor(model => model.ApartmentTypeId, (SelectList)ViewBag.ApartmentType, "apartman tipi seçiniz...", new { @class = "form-control dropdown col-md-10" })
+                @Html.ValidationMessageFor(model => model.ApartmentTypeId, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.BlockId, "Blok", htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-2" })
+                @Html.DropDownListFor(model => model.BlockId, (List<SelectListItem>)ViewBag.Block, "blok seçiniz...", new { @class = "form-control dropdown col-md-10" })
+                @Html.ValidationMessageFor(model => model.BlockId, "", new { @class = "text-danger col-md-10", style = "margin-left:150px" })
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12 text-right" style="left">
+                    @BoostrapHelper.Button("success", "Kaydet", string.Empty, "submit", "save", "Kaydet")
+                    @BoostrapHelper.LinkButton("/Apartment/Index", "secondary", string.Empty, "İptal", "arrow-left", "İptal")
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+

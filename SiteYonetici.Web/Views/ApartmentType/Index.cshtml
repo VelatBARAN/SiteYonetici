@@ -1,0 +1,214 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<ApartmentType>
+@{
+    ViewBag.Title = "Daire Tipleri";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Daire Tipleri Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/ApartmentType/Create" class="btn btn-primary" data-target="#newApartmentTypeModal" data-toggle="modal" data-title="newApartmentType" title="Yeni Daire Tipi Ekle"><i class="fa fa-plus mr-2"></i>Yeni Daire Tipi Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.ApartmentTypeName).Titled("Daire Tipi");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning', title='Güncelle', data-toggle = 'modal', data-target = '#editApartmentTypeModal', data-apartmenttype-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteApartmentTypeModal', data-apartmenttype-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir daire tipi bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new ApartmentType-->
+<div class="modal fade" id="newApartmentTypeModal" tabindex="-1" aria-labelledby="newApartmentTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newApartmentTypeModalLabel">Daire Tipi Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newApartmentTypeName" class="control-label col-md-4">Daire Tipi *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newApartmentTypeName" placeholder="Daire tipi" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddApartmentType" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit ApartmentType-->
+<div class="modal fade" id="editApartmentTypeModal" tabindex="-1" aria-labelledby="editApartmentTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editApartmentTypeModalLabel">Daire Tipi Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editApartmentTypeId" value="" />
+                        <div class="form-group">
+                            <strong for="editApartmentTypeName" class="control-label col-md-4">Daire Tipi *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editApartmentTypeName" placeholder="Daire tipi" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditApartmentType" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete ApartmentType-->
+<div class="modal fade" id="deleteApartmentTypeModal" tabindex="-1" aria-labelledby="deleteApartmentTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteApartmentTypeModalLabel">Daire Tipi Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteApartmentTypeForm" action="/ApartmentType/Delete" method="post">
+                            <input type="hidden" id="deleteApartmentTypeId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Daire tipi kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteApartmentType" class="btn btn-danger" title="Sil" onclick="btnDeleteApartmentType_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddApartmentType").click(function () {
+
+            var apartmentTypeName = $("#newApartmentTypeName").val();
+
+            var obj = {
+                "ApartmentTypeName": apartmentTypeName
+            };
+            $.ajax({
+                url: "/ApartmentType/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editApartmentTypeModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var apartmenttypeid = btn.data("apartmenttype-id");
+
+            $.ajax({
+                url: "/ApartmentType/Edit/" + apartmenttypeid,
+                method: "GET",
+            }).done(function (data) {
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editApartmentTypeName").val(data.result.ApartmentTypeName);
+                    $("#editApartmentTypeId").val(data.result.Id);
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditApartmentType").click(function () {
+
+            var apartmentTypeName = $("#editApartmentTypeName").val();
+            var apartmentTypeId = $("#editApartmentTypeId").val();
+
+            var obj = {
+                "ApartmentTypeName": apartmentTypeName,
+                "Id": apartmentTypeId
+            };
+
+            $.ajax({
+                url: "/ApartmentType/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteApartmentTypeModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var apartmenttypeId = btn.data("apartmenttype-id");
+            $("#deleteApartmentTypeModal").find("#deleteApartmentTypeId").val(apartmenttypeId);
+        });
+    });
+    function btnDeleteApartmentType_Click() {
+        $("#deleteApartmentTypeForm").submit();
+    }
+</script>
+

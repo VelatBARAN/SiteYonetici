@@ -1,0 +1,275 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<Client>
+@{
+    ViewBag.Title = "Cariler";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Cari Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/Client/Create" class="btn btn-primary" data-target="#newClientModal" data-toggle="modal" data-title="newClient" title="Yeni Cari Ekle"><i class="fa fa-plus mr-2"></i>Yeni Cari Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.Name).Titled("Cari Adı");
+       col.Add(x => x.TaxNo).Titled("Vergi No");
+       col.Add(x => x.TaxOffice).Titled("Vergi Dairesi");
+       col.Add(x => x.AccountOrIbanNo).Titled("Hesap/Iban No");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning',title='Güncelle', data-toggle = 'modal', data-target = '#editClientModal', data-client-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteClientModal', data-client-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir cari bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new Client-->
+<div class="modal fade" id="newClientModal" tabindex="-1" aria-labelledby="newClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newClientModalLabel">Cari Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newClientName" class="control-label col-md-4">Cari Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newClientName" placeholder="Cari adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newTaxNo" class="control-label col-md-4">Vergi No </strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newTaxNo" placeholder="Vergi no" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newTaxOffice" class="control-label col-md-4">Vergi Dairesi </strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newTaxOffice" placeholder="Vergi dairesi" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newAccountOrIbanNo" class="control-label col-md-4">Hesap/Iban No *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newAccountOrIbanNo" placeholder="Hesap/Iban no" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddClient" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit Client-->
+<div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editClientModalLabel">Cari Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editClientId" value="" />
+                        <div class="form-group">
+                            <strong for="editClientName" class="control-label col-md-4">Cari Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editClientName" placeholder="Cari adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editTaxNo" class="control-label col-md-4">Vergi No </strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editTaxNo" placeholder="Vergi no" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editTaxOffice" class="control-label col-md-4">Vergi Dairesi </strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editTaxOffice" placeholder="Vergi dairesi" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editAccountOrIbanNo" class="control-label col-md-4">Hesap/Iban No *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editAccountOrIbanNo" placeholder="Hesap/Iban no" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditClient" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete Client-->
+<div class="modal fade" id="deleteClientModal" tabindex="-1" aria-labelledby="deleteClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteClientModalLabel">Blok Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteClientForm" action="/Client/Delete" method="post">
+                            <input type="hidden" id="deleteClientId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Cari kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteClient" class="btn btn-danger" title="Sil" onclick="btnDeleteClient_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddClient").click(function () {
+
+            var clientName = $("#newClientName").val();
+            var taxNo = $("#newTaxNo").val();
+            var taxOffice = $("#newTaxOffice").val();
+            var accountOrIbanNo = $("#newAccountOrIbanNo").val();
+
+            var obj = {
+                "Name": clientName,
+                "TaxNo": taxNo,
+                "TaxOffice": taxOffice,
+                "AccountOrIbanNo": accountOrIbanNo
+            };
+            $.ajax({
+                url: "/Client/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editClientModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var clientid = btn.data("client-id");
+
+            $.ajax({
+                url: "/Client/Edit/" + clientid,
+                method: "GET",
+            }).done(function (data) {
+
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editClientName").val(data.result.Name);
+                    $("#editTaxNo").val(data.result.TaxNo);
+                    $("#editTaxOffice").val(data.result.TaxOffice);
+                    $("#editAccountOrIbanNo").val(data.result.AccountOrIbanNo);
+                    $("#editClientId").val(data.result.Id);
+                }
+
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditClient").click(function () {
+
+            var clientName = $("#editClientName").val();
+            var taxNo = $("#editTaxNo").val();
+            var taxOffice = $("#editTaxOffice").val();
+            var accountOrIbanNo = $("#editAccountOrIbanNo").val();
+            var clientId = $("#editClientId").val();
+
+            var obj = {
+                "Name": clientName,
+                "TaxNo": taxNo,
+                "TaxOffice": taxOffice,
+                "AccountOrIbanNo": accountOrIbanNo,
+                "Id": clientId
+            };
+
+            $.ajax({
+                url: "/Client/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteClientModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var clientId = btn.data("client-id");
+            $("#deleteClientModal").find("#deleteClientId").val(clientId);
+        });
+    });
+    function btnDeleteClient_Click() {
+        $("#deleteClientForm").submit();
+    }
+</script>

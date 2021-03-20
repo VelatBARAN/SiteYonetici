@@ -1,0 +1,232 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<DuesPeriod>
+@{
+    ViewBag.Title = "Daire Tipleri";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Dönem Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/DuesPeriod/Create" class="btn btn-primary" data-target="#newDuesPeriodModal" data-toggle="modal" data-title="newDuesPeriod" title="Yeni Dönem Ekle"><i class="fa fa-plus mr-2"></i>Yeni Dönem Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.DuesYear).Titled("Dönem Yılı");
+       col.Add(x => x.DuesMonth).Titled("Dönem Ayı");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning', title='Güncelle', data-toggle = 'modal', data-target = '#editDuesPeriodModal', data-duesperiod-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteDuesPeriodModal', data-duesperiod-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir daire tipi bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new DuesPeriod-->
+<div class="modal fade" id="newDuesPeriodModal" tabindex="-1" aria-labelledby="newDuesPeriodModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newDuesPeriodModalLabel">Dönem Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newDuesYear" class="control-label col-md-4">Dönem Yılı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newDuesYear" placeholder="Dönem yılı" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <strong for="newDuesMonth" class="control-label col-md-4">Dönem Ayı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newDuesMonth" placeholder="Dönem ayı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddDuesPeriod" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit DuesPeriod-->
+<div class="modal fade" id="editDuesPeriodModal" tabindex="-1" aria-labelledby="editDuesPeriodModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editDuesPeriodModalLabel">Dönem Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editDuesPeriodId" value="" />
+                        <div class="form-group">
+                            <strong for="editDuesYear" class="control-label col-md-4">Dönem Yılı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editDuesYear" placeholder="Dönem yılı" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <strong for="editDuesMonth" class="control-label col-md-4">Dönem Ayı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editDuesMonth" placeholder="Dönem ayı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditDuesPeriod" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete DuesPeriod-->
+<div class="modal fade" id="deleteDuesPeriodModal" tabindex="-1" aria-labelledby="deleteDuesPeriodModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteDuesPeriodModalLabel">Dönem Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteDuesPeriodForm" action="/DuesPeriod/Delete" method="post">
+                            <input type="hidden" id="deleteDuesPeriodId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Dönem kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteDuesPeriod" class="btn btn-danger" title="Sil" onclick="btnDeleteDuesPeriod_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddDuesPeriod").click(function () {
+
+            var duesYear = $("#newDuesYear").val();
+            var duesMonth = $("#newDuesMonth").val();
+
+            var obj = {
+                "DuesYear": duesYear,
+                "DuesMonth": duesMonth
+            };
+            $.ajax({
+                url: "/DuesPeriod/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editDuesPeriodModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var duesperiodid = btn.data("duesperiod-id");
+
+            $.ajax({
+                url: "/DuesPeriod/Edit/" + duesperiodid,
+                method: "GET",
+            }).done(function (data) {
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editDuesYear").val(data.result.DuesYear);
+                    $("#editDuesMonth").val(data.result.DuesMonth);
+                    $("#editDuesPeriodId").val(data.result.Id);
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditDuesPeriod").click(function () {
+
+            var duesYear = $("#editDuesYear").val();
+            var duesMonth = $("#editDuesMonth").val();
+            var duesPeriodId = $("#editDuesPeriodId").val();
+
+            var obj = {
+                "DuesYear": duesYear,
+                "DuesMonth": duesMonth,
+                "Id": duesPeriodId
+            };
+
+            $.ajax({
+                url: "/DuesPeriod/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteDuesPeriodModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var duesperiodId = btn.data("duesperiod-id");
+            $("#deleteDuesPeriodModal").find("#deleteDuesPeriodId").val(duesperiodId);
+        });
+    });
+    function btnDeleteDuesPeriod_Click() {
+        $("#deleteDuesPeriodForm").submit();
+    }
+</script>
+

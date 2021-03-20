@@ -1,0 +1,81 @@
+﻿@model SiteYonetici.Entities.Staff
+
+<div class="row">
+    <div class="col-md-10 col-offset-1">
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.TC, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.TC, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.InsuranceNo, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.InsuranceNo, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.InsuranceNo, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.TaskTypeId, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.TaskType.TaskTypeName, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+            @Html.ValidationMessageFor(model => model.TaskTypeId, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.JobDefinition, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            <textarea name="JobDefinition" class="form-control col-md-8" rows="5" disabled>@Html.Raw(Model.JobDefinition)</textarea>
+            @Html.ValidationMessageFor(model => model.JobDefinition, "", new { @class = "text-danger col-md-8", style = "margin-left:150px" })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @if (Model.IsActive)
+            {
+                <i class="fa fa-check text-success col-md-8"></i>
+            }
+            else
+            {
+                <i class="fa fa-times text-danger col-md-8"></i>
+            }
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.ModifiedDate, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.ModifiedDate, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.SavedUsername, htmlAttributes: new { @class = "col-form-label font-weight-bold col-md-4" })
+            @Html.EditorFor(model => model.SavedUsername, new { htmlAttributes = new { @class = "form-control col-md-8", disabled = "true" } })
+        </div>
+    </div>
+</div>

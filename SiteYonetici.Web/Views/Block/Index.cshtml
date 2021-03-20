@@ -1,0 +1,275 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<Block>
+@{
+    ViewBag.Title = "Bloklar";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Blok Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/Block/Create" class="btn btn-primary" data-target="#newBlockModal" data-toggle="modal" data-title="newBlock" title="Yeni Blok Ekle"><i class="fa fa-plus mr-2"></i>Yeni Blok Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.Name).Titled("Blok Adı");
+       col.Add(x => x.ApartmentCount).Titled("Daire Sayısı");
+       col.Add(x => x.TaskedEmployeeCount).Titled("Görevli Personel Sayısı");
+       col.Add(x => x.Description).Titled("Açıklama");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning',title='Güncelle', data-toggle = 'modal', data-target = '#editBlockModal', data-block-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteBlockModal', data-block-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir blok bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new Block-->
+<div class="modal fade" id="newBlockModal" tabindex="-1" aria-labelledby="newBlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newBlockModalLabel">Blok Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newBlockName" class="control-label col-md-4">Blok Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newBlockName" placeholder="Blok adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newApartmentCount" class="control-label col-md-4">Daire Sayısı *</strong>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" id="newApartmentCount" placeholder="Daire sayısı" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newTaskedEmployeeCount" class="control-label col-md-4">Görevli Personel Sayısı *</strong>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" id="newTaskedEmployeeCount" placeholder="Görevli personel sayısı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newDescription" class="control-label col-md-4">Açıklama</strong>
+                            <div class="col-md-8">
+                                <textarea class="form-control" id="newDescription" placeholder="Açıklama" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddBlock" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit Block-->
+<div class="modal fade" id="editBlockModal" tabindex="-1" aria-labelledby="editBlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editBlockModalLabel">Cari Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editBlockId" value="" />
+                        <div class="form-group">
+                            <strong for="editBlockName" class="control-label col-md-4">Blok Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editBlockName" placeholder="Blok adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editApartmentCount" class="control-label col-md-4">Daire Sayısı *</strong>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" id="editApartmentCount" placeholder="Daire sayısı" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editTaskedEmployeeCount" class="control-label col-md-4">Görevli Personel Sayısı *</strong>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" id="editTaskedEmployeeCount" placeholder="Görevli personel sayısı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editDescription" class="control-label col-md-4">Açıklama</strong>
+                            <div class="col-md-8">
+                                <textarea class="form-control" id="editDescription" placeholder="Açıklama" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditBlock" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete Block-->
+<div class="modal fade" id="deleteBlockModal" tabindex="-1" aria-labelledby="deleteBlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteBlockModalLabel">Blok Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteBlockForm" action="/Block/Delete" method="post">
+                            <input type="hidden" id="deleteBlockId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Blok kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteBlock" class="btn btn-danger" title="Sil" onclick="btnDeleteBlock_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddBlock").click(function () {
+
+            var blockName = $("#newBlockName").val();
+            var apartmentCount = $("#newApartmentCount").val();
+            var taskedEmployeeCount = $("#newTaskedEmployeeCount").val();
+            var description = $("#newDescription").val();
+
+            var obj = {
+                "Name": blockName,
+                "ApartmentCount": apartmentCount,
+                "TaskedEmployeeCount": taskedEmployeeCount,
+                "Description": description
+            };
+            $.ajax({
+                url: "/Block/Create",
+                method: "Post",
+                data: obj, // modele dönüştürme
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editBlockModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var blockid = btn.data("block-id");
+
+            $.ajax({
+                url: "/Block/Edit/" + blockid,
+                method: "GET",
+            }).done(function (data) {
+
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editBlockName").val(data.result.Name);
+                    $("#editApartmentCount").val(data.result.ApartmentCount);
+                    $("#editTaskedEmployeeCount").val(data.result.TaskedEmployeeCount);
+                    $("#editDescription").val(data.result.Description);
+                    $("#editBlockId").val(data.result.Id);
+                }
+
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditBlock").click(function () {
+
+            var blockName = $("#editBlockName").val();
+            var apartmentCount = $("#editApartmentCount").val();
+            var taskedEmployeeCount = $("#editTaskedEmployeeCount").val();
+            var description = $("#editDescription").val();
+            var blockId = $("#editBlockId").val();
+
+            var obj = {
+                "Name": blockName,
+                "ApartmentCount": apartmentCount,
+                "TaskedEmployeeCount": taskedEmployeeCount,
+                "Description": description,
+                "Id": blockId
+            };
+
+            $.ajax({
+                url: "/Block/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteBlockModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var clientId = btn.data("block-id");
+            $("#deleteBlockModal").find("#deleteBlockId").val(clientId);
+        });
+    });
+    function btnDeleteBlock_Click() {
+        $("#deleteBlockForm").submit();
+    }
+</script>

@@ -1,0 +1,326 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<Managers>
+@{
+    ViewBag.Title = "Yöneticiler";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Yöneticiler Listesi</h1>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/Manager/Create" class="btn btn-outline-primary" data-target="#newManagerModal" data-toggle="modal" data-title="newManager" title="Yeni Yönetici Ekle"><i class="fa fa-plus mr-2"></i>Yeni Yönetici Ekle</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.Name).Titled("Adı");
+       col.Add(x => x.Surname).Titled("Soyadı");
+       col.Add(x => x.TC).Titled("TC");
+       col.Add(x => x.Phone).Titled("Telefon");
+       col.Add(x => x.Eposta).Titled("Eposta");
+       col.Add(x => x.Password).Titled("Şifre");
+       col.Add(x => x.IsActive).Titled("AktifMi");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-outline-warning btn-sm',title='Güncelle', data-toggle = 'modal', data-target = '#editManagerModal', data-manager-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-outline-danger btn-sm', title='Sil', data-toggle = 'modal', data-target = '#deleteManagerModal', data-manager-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir yönetici bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new Manager-->
+<div class="modal fade" id="newManagerModal" tabindex="-1" aria-labelledby="newManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newManagerModalLabel">Yönetici Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newManagerName" class="control-label col-md-4">Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newManagerName" placeholder="Adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newManagerSurname" class="control-label col-md-4">Soyadı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newManagerSurname" placeholder="Soyadı" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newManagerTC" class="control-label col-md-4">TC *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newManagerTC" maxlength="11" placeholder="TC" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newManagerPhone" class="control-label col-md-4">Telefon *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newManagerPhone" maxlength="11" placeholder="Telefon" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newManagerEposta" class="control-label col-md-4">Eposta *</strong>
+                            <div class="col-md-8">
+                                <input type="email" class="form-control" id="newManagerEposta" placeholder="Eposta" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="newManagerPassword" class="control-label col-md-4">Şifre *</strong>
+                            <div class="col-md-8">
+                                <input type="password" class="form-control" id="newManagerPassword" placeholder="Şifre" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddManager" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit Manager-->
+<div class="modal fade" id="editManagerModal" tabindex="-1" aria-labelledby="editManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editManagerModalLabel">Yönetici Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" class="form-control" id="editManagerId" value="">
+                        <div class="form-group">
+                            <strong for="editManagerName" class="control-label col-md-4">Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editManagerName" placeholder="Adı" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editManagerSurname" class="control-label col-md-4">Soyadı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editManagerSurname" placeholder="Soyadı" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editManagerTC" class="control-label col-md-4">TC *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editManagerTC" placeholder="TC" maxlength="11" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editManagerPhone" class="control-label col-md-4">Telefon *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editManagerPhone" placeholder="Telefon" maxlength="11" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editManagerEposta" class="control-label col-md-4">Eposta *</strong>
+                            <div class="col-md-8">
+                                <input type="email" class="form-control" id="editManagerEposta" placeholder="Eposta" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editManagerPassword" class="control-label col-md-4">Şifre *</strong>
+                            <div class="col-md-8">
+                                <input type="password" class="form-control" id="editManagerPassword" placeholder="Şifre" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <strong for="editManagerIsActive" class="control-label col-md-4">Aktif mi *</strong>
+                            <div class="checkbox col-md-8">
+                                <input type="checkbox" id="editManagerIsActive"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditManager" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete Manager-->
+<div class="modal fade" id="deleteManagerModal" tabindex="-1" aria-labelledby="deleteManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteManagerModalLabel">Yönetici Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteManagerForm" action="/Manager/Delete" method="post">
+                            <input type="hidden" id="deleteManagerId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Yöneitici kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteManager" class="btn btn-danger" title="Sil" onclick="btnDeleteManager_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddManager").click(function () {
+
+            var managerName = $("#newManagerName").val();
+            var managerSurname = $("#newManagerSurname").val();
+            var managerTc = $("#newManagerTC").val();
+            var managerPhone = $("#newManagerPhone").val();
+            var managerEposta = $("#newManagerEposta").val();
+            var managerPassword = $("#newManagerPassword").val();
+
+            var obj = {
+                "Name": managerName,
+                "Surname": managerSurname,
+                "TC": managerTc,
+                "Phone": managerPhone,
+                "Eposta": managerEposta,
+                "Password": managerPassword
+            };
+            $.ajax({
+                url: "/Manager/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editManagerModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var managerid = btn.data("manager-id");
+
+            $.ajax({
+                url: "/Manager/Edit/" + managerid,
+                method: "GET",
+            }).done(function (data) {
+
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editManagerName").val(data.result.Name);
+                    $("#editManagerSurname").val(data.result.Surname);
+                    $("#editManagerTC").val(data.result.TC);
+                    $("#editManagerPhone").val(data.result.Phone);
+                    $("#editManagerEposta").val(data.result.Eposta);
+                    $("#editManagerIsActive").prop("checked", data.result.IsActive);
+                    $("#editManagerId").val(data.result.Id);
+                }
+
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditManager").click(function () {
+
+            var managerName = $("#editManagerName").val();
+            var managerSurname = $("#editManagerSurname").val();
+            var managerTc = $("#editManagerTC").val();
+            var managerPhone = $("#editManagerPhone").val();
+            var managerEposta = $("#editManagerEposta").val();
+            var managerPassword = $("#editManagerPassword").val();
+            var managerIsActive = $("#editManagerIsActive").prop("checked")
+            var managerId = $("#editManagerId").val();
+
+            var obj = {
+                "Name": managerName,
+                "Surname": managerSurname,
+                "TC": managerTc,
+                "Phone": managerPhone,
+                "Eposta": managerEposta,
+                "Password": managerPassword,
+                "IsActive": managerIsActive,
+                "Id": managerId
+            };
+
+            $.ajax({
+                url: "/Manager/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteManagerModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var managerId = btn.data("manager-id");
+            $("#deleteManagerModal").find("#deleteManagerId").val(managerId);
+        });
+    });
+    function btnDeleteManager_Click() {
+        $("#deleteManagerForm").submit();
+    }
+</script>

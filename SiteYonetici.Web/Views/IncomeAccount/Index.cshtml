@@ -1,0 +1,218 @@
+﻿@using GridMvc.Html
+@using SiteYonetici.Entities
+@model List<IncomeAccount>
+@{
+    ViewBag.Title = "Gelir Hesapları";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="display-4">
+            <p>@ViewBag.Title</p>
+        </div>
+    </div>
+</div>
+<div class="row m-2">
+    <div class="col-md-12 text-right">
+        <a href="/IncomeAccount/Create" class="btn btn-primary" data-target="#newIncomeAccountModal" data-toggle="modal" data-title="newIncomeAccount" title="Yeni Gelir Hesabı Ekle">
+            <i class="fa fa-plus mr-2"></i>Yeni Gelir Hesabı Ekle
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Grid(Model).Columns(col =>
+   {
+       col.Add(x => x.Id, true);
+       col.Add(x => x.AccountName).Titled("Gelir Hesabı");
+       col.Add(x => x.CreatedDate).Titled("Kayıt Tarihi");
+       col.Add(x => x.ModifiedDate).Titled("Güncelleme Tarihi");
+       col.Add(x => x.SavedUsername).Titled("Kaydeden");
+
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-warning', title='Güncelle', data-toggle = 'modal', data-target = '#editIncomeAccountModal', data-incomeaccount-id = '" + k.Id + "'><i class='fa fa-edit mr-2'></i>Güncelle</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+       col.Add().Encoded(false).Sanitized(false).RenderValueAs(k =>
+       {
+           string htmlEditButton = "<a class='btn btn-danger', title='Sil', data-toggle = 'modal', data-target = '#deleteIncomeAccountModal', data-incomeaccount-id = '" + k.Id + "'><i class='fa fa-trash mr-2'></i>Sil</a>";
+           return MvcHtmlString.Create(htmlEditButton);
+       });
+   }).Filterable(true).Sortable(true).WithPaging(10).SetLanguage("tr").EmptyText("Kayıtlı bir gelir hesabı bulunmamaktadır.")
+    </div>
+</div>
+
+<!-- Modal new IncomeAccount-->
+<div class="modal fade" id="newIncomeAccountModal" tabindex="-1" aria-labelledby="newIncomeAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="newIncomeAccountModalLabel">Gelir Hesabı Kayıt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <strong for="newAccountName" class="control-label col-md-4">Hesap Adı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="newAccountName" placeholder="Hesap adı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnAddIncomeAccount" class="btn btn-success" title="Kaydet"><i class="fa fa-save mr-2"></i>Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit IncomeAccount-->
+<div class="modal fade" id="editIncomeAccountModal" tabindex="-1" aria-labelledby="editIncomeAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editIncomeAccountModalLabel">Gelir Hesabı Güncelle</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="editIncomeAccountId" value="" />
+                        <div class="form-group">
+                            <strong for="editAccountName" class="control-label-md-4">Gelir Hesabı *</strong>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="editAccountName" placeholder="Hesap adı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Kapat"><i class="fa fa-close mr-2"></i>Kapat</button>
+                <button type="submit" id="btnEditIncomeAccount" class="btn btn-warning" title="Güncelle"><i class="fa fa-edit mr-2"></i>Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete IncomeAccount-->
+<div class="modal fade" id="deleteIncomeAccountModal" tabindex="-1" aria-labelledby="deleteIncomeAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteIncomeAccountModalLabel">Gelir Hesabı Sil</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form id="deleteIncomeAccountForm" action="/IncomeAccount/Delete" method="post">
+                            <input type="hidden" id="deleteIncomeAccountId" name="Id" />
+                        </form>
+
+                        <div class="alert alert-danger">
+                            <span class="fa fa-remove"></span> Gelir hesabı kaydını silmek istediğinize emin misiniz?
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" title="İptal"><i class="fa fa-close mr-2"></i>İptal</button>
+                <button type="submit" id="btnDeleteIncomeAccount" class="btn btn-danger" title="Sil" onclick="btnDeleteIncomeAccount_Click()"><i class="fa fa-trash mr-2"></i>Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("#btnAddIncomeAccount").click(function () {
+
+            var accountName = $("#newAccountName").val();
+
+            var obj = {
+                "AccountName": accountName
+            };
+            $.ajax({
+                url: "/IncomeAccount/Create",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+                //location.reload();
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#editIncomeAccountModal').on('show.bs.modal', function (e) {
+
+            var btn = $(e.relatedTarget);
+            var safeid = btn.data("incomeaccount-id");
+
+            $.ajax({
+                url: "/IncomeAccount/Edit/" + safeid,
+                method: "GET",
+            }).done(function (data) {
+                if (data.hasError) {
+                    alert(data.Message);
+                } else {
+                    $("#editAccountName").val(data.result.AccountName);
+                    $("#editIncomeAccountId").val(data.result.Id);
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            });
+        });
+
+        $("#btnEditIncomeAccount").click(function () {
+
+            var accountName = $("#editAccountName").val();
+            var incomeAccountId = $("#editIncomeAccountId").val();
+
+            var obj = {
+                "AccountName": accountName,
+                "Id": incomeAccountId
+            };
+
+            $.ajax({
+                url: "/IncomeAccount/Edit",
+                method: "Post",
+                data: obj,
+                dataType: "json"
+            }).done(function (result) {
+                if (result.hasError) {
+                    alert(result.Message);
+                } else {
+                    alert(result.Message);
+                    location.reload();
+                }
+            }).fail(function () {
+                alert("Sunucu ile bağlantı kurulamadı");
+            });
+
+        });
+
+        $('#deleteIncomeAccountModal').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            var incomeaccountId = btn.data("incomeaccount-id");
+            $("#deleteIncomeAccountModal").find("#deleteIncomeAccountId").val(incomeaccountId);
+        });
+    });
+    function btnDeleteIncomeAccount_Click() {
+        $("#deleteIncomeAccountForm").submit();
+    }
+</script>
+
